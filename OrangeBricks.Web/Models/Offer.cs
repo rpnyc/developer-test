@@ -15,5 +15,8 @@ namespace OrangeBricks.Web.Models
         public DateTime CreatedAt { get; set; }
 
         public DateTime UpdatedAt { get; set; }
+
+        //RP : TODO: Change this property name to just UserId to be consistent across
+        public string OfferMadeByUserId { get; set; }
     }
 }

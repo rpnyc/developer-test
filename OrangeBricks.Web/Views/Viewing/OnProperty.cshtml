@@ -1,0 +1,41 @@
+﻿@model OrangeBricks.Web.Controllers.Viewing.ViewModels.ViewingsOnPropertyViewModel
+
+@{
+    ViewBag.Title = "Viewings that have been scheduled";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p>Here you can see the viewings that have been scheduled</p>
+@if (Model == null)
+{
+    <div class="alert alert-info" role="alert">
+        There is either no viewings scheduled for this property or you do not have rights to see viewings scheduled for others
+    </div>
+}
+else if (Model.HasViewings)
+{
+    <div class="alert alert-info" role="alert">
+        <p><strong>Property Type: </strong> @Model.PropertyType</p>
+        <p><strong>Street: </strong> @Model.StreetName</p>
+        <p><strong>Number of Bedrooms: </strong> @Model.NumberOfBedrooms</p>
+
+        <p>There are @Model.Viewings.Count() viewings scheduled for this property...</p>
+    </div>  
+        foreach (var viewing in Model.Viewings)
+        {
+        <hr />
+        <div>
+            <p><strong>Date: </strong> @viewing.Date.ToShortDateString()</p>
+            <p><strong>Time: </strong> @viewing.Time.ToString():00 Hrs</p>
+            <p><strong>Buyer: </strong> @viewing.UserId</p> (Note: This will need to be replaced with user's name)
+        </div>
+        }
+        }
+        else
+        {
+        <div class="alert alert-info" role="alert">
+            This property has no viewings yet!
+        </div>
+        }

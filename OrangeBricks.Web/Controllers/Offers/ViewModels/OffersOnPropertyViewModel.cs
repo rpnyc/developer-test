@@ -11,6 +11,8 @@ namespace OrangeBricks.Web.Controllers.Offers.ViewModels
         public bool HasOffers { get; set; }
         public IEnumerable<OfferViewModel> Offers { get; set; }
         public int PropertyId { get; set; }
+        public bool IsViewForBuyer { get; set; }
+
     }
 
     public class OfferViewModel

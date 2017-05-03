@@ -22,6 +22,7 @@ namespace OrangeBricks.Web.Controllers.Property.Builders
                 PropertyType = property.PropertyType,
                 StreetName = property.StreetName,
                 Offer = 100000 // TODO: property.SuggestedAskingPrice
+               
             };
         }
     }

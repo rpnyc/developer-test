@@ -1,6 +1,7 @@
 using System;
 using System.Data.Entity.Core.Common.CommandTrees;
 using System.Linq;
+using System.Data.Entity;
 using OrangeBricks.Web.Controllers.Property.ViewModels;
 using OrangeBricks.Web.Models;
 
@@ -15,9 +16,11 @@ namespace OrangeBricks.Web.Controllers.Property.Builders
             _context = context;
         }
 
-        public PropertiesViewModel Build(PropertiesQuery query)
+        public PropertiesViewModel Build(PropertiesQuery query, string currentUserID)
         {
             var properties = _context.Properties
+                .Include(a => a.Offers)
+                .Include(a => a.Viewings) //RP: TODO: Overhead to take this for every property
                 .Where(p => p.IsListedForSale);
 
             if (!string.IsNullOrWhiteSpace(query.Search))
@@ -30,22 +33,22 @@ namespace OrangeBricks.Web.Controllers.Property.Builders
             {
                 Properties = properties
                     .ToList()
-                    .Select(MapViewModel)
+                      .Select(p => new PropertyViewModel
+                      {
+                          Id = p.Id,
+                          StreetName = p.StreetName,
+                          Description = p.Description,
+                          NumberOfBedrooms = p.NumberOfBedrooms,
+                          PropertyType = p.PropertyType,
+                          //Flags indicating if current user has any offers on or viewing scheduled on this property
+                          HasOfferFromCurrentUser = p.Offers.Any(x => x.OfferMadeByUserId == currentUserID),
+                          HasViewings = p.Viewings.Any(x => x.UserId == currentUserID)
+                      }
+                    )
                     .ToList(),
                 Search = query.Search
             };
         }
 
-        private static PropertyViewModel MapViewModel(Models.Property property)
-        {
-            return new PropertyViewModel
-            {
-                Id = property.Id,
-                StreetName = property.StreetName,
-                Description = property.Description,
-                NumberOfBedrooms = property.NumberOfBedrooms,
-                PropertyType = property.PropertyType
-            };
-        }
     }
 }

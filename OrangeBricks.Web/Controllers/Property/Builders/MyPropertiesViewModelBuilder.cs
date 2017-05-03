@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Data.Entity;
 using OrangeBricks.Web.Controllers.Property.ViewModels;
 using OrangeBricks.Web.Models;
 
@@ -19,6 +20,7 @@ namespace OrangeBricks.Web.Controllers.Property.Builders
             {
                 Properties = _context.Properties
                     .Where(p => p.SellerUserId == sellerId)
+                    .Include(a => a.Viewings)
                     .Select(p => new PropertyViewModel
                     {
                         Id = p.Id,
@@ -26,7 +28,8 @@ namespace OrangeBricks.Web.Controllers.Property.Builders
                         Description = p.Description,
                         NumberOfBedrooms = p.NumberOfBedrooms,
                         PropertyType = p.PropertyType,
-                        IsListedForSale = p.IsListedForSale
+                        IsListedForSale = p.IsListedForSale,
+                        HasViewings = p.Viewings.Any()
                     })
                     .ToList()
             };

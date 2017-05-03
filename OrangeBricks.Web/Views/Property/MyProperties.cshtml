@@ -27,4 +27,13 @@
         }
     }
 
+
+    if (property.HasViewings)
+    {   
+        
+        <p>
+            <a href="@Url.Action("OnProperty", "Viewing", new {id = property.Id})">View viewings scheduled for this property...</a>
+        </p>
+    }
 }
+    

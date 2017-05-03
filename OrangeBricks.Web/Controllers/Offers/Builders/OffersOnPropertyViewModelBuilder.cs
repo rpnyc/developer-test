@@ -15,24 +15,38 @@ namespace OrangeBricks.Web.Controllers.Offers.Builders
             _context = context;
         }
 
-        public OffersOnPropertyViewModel Build(int id)
+        /// <summary>
+        /// Returns the Offers on a property. If the buyer user ID is provided, then 
+        /// restricts return to offers made by that buyer
+        /// </summary>
+        public OffersOnPropertyViewModel Build(int id, string buyerUserID)
         {
+            bool isForBuyer = false;
+
             var property = _context.Properties
-                .Where(p => p.Id == id)
                 .Include(x => x.Offers)
+                .Where(p => p.Id == id )
                 .SingleOrDefault();
 
             var offers = property.Offers ?? new List<Offer>();
 
+            if (buyerUserID != string.Empty)
+            {
+                offers = offers.Where(o => o.OfferMadeByUserId == buyerUserID).ToList();
+                isForBuyer = true;
+            }
+
             return new OffersOnPropertyViewModel
             {
+                IsViewForBuyer = isForBuyer,
                 HasOffers = offers.Any(),
                 Offers = offers.Select(x => new OfferViewModel
                 {
                     Id = x.Id,
                     Amount = x.Amount,
                     CreatedAt = x.CreatedAt,
-                    IsPending = x.Status == OfferStatus.Pending,
+
+                    IsPending = (x.Status == OfferStatus.Pending),
                     Status = x.Status.ToString()
                 }),
                 PropertyId = property.Id, 
@@ -41,5 +55,12 @@ namespace OrangeBricks.Web.Controllers.Offers.Builders
                 NumberOfBedrooms = property.NumberOfBedrooms
             };
         }
+
+        public OffersOnPropertyViewModel Build(int id)
+        {
+            return Build(id, string.Empty);
+
+        }
+    
     }
 }

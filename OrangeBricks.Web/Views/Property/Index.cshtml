@@ -30,7 +30,37 @@
     <p>@property.NumberOfBedrooms bedroom @property.PropertyType</p>
     <p>@property.Description</p>
 
-    <a href="@Url.Action("MakeOffer", "Property", new {id = property.Id})" class="btn btn-primary">
-        Make Offer
-    </a>
+    
+    @*If the current logged in user has any offers on this property*@
+    if (property.HasOfferFromCurrentUser)
+    {
+        <a href="@Url.Action("OnPropertyByMe", "Offers", new { id = property.Id })" class="btn btn-default">
+            View My Offer
+        </a>
+    }
+    else
+    {
+        <a href="@Url.Action("MakeOffer", "Property", new {id = property.Id})" class="btn btn-primary">
+            Make Offer
+        </a>
+    }
+
+
+    @*If the current logged in user has any viewings scheduled for this property*@
+    if (property.HasViewings)
+    {
+        <a href="@Url.Action("OnPropertyByMe", "Viewing", new { id = property.Id })" class="btn btn-default">
+            View My Viewing Schedule
+        </a>
+
+    }
+    else
+    {
+        <a href="@Url.Action("ScheduleViewing", "Viewing", new {id = property.Id})" class="btn btn-primary">
+            Schedule Viewing
+        </a>
+
+    }
+
+
 }
